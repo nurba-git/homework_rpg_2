@@ -1,8 +1,8 @@
 package com.narxoz.rpg.builder;
 
-import com.narxoz.rpg.enemy.BasicEnemyBuilder;
-import com.narxoz.rpg.enemy.Enemy;
 import com.narxoz.rpg.combat.Ability;
+import com.narxoz.rpg.enemy.DragonBoss;
+import com.narxoz.rpg.enemy.Enemy;
 import com.narxoz.rpg.loot.LootTable;
 
 import java.util.ArrayList;
@@ -10,7 +10,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class DragonBossBuilder implements EnemyBuilder {
+public abstract class BossEnemyBuilder implements EnemyBuilder {
 
     private String name;
     private int health;
@@ -19,47 +19,47 @@ public class DragonBossBuilder implements EnemyBuilder {
     private int speed;
     private String element;
     private List<Ability> abilities = new ArrayList<>();
-    private Map<Integer, Integer> phases = new HashMap<>();
+    private Map<Integer,Integer> phases = new HashMap<>();
     private LootTable lootTable;
     private String aiBehavior;
-    private boolean canFly;
-    private boolean hasBreathAttack;
-    private int wingspan;
+    private boolean canFly = false;
+    private boolean hasBreathAttack = false;
+    private int wingspan = 0;
 
-    @Override
-    public EnemyBuilder setName(String name) { this.name = name; return this; }
-    @Override
-    public EnemyBuilder setHealth(int health) { this.health = health; return this; }
-    @Override
-    public EnemyBuilder setDamage(int damage) { this.damage = damage; return this; }
-    @Override
-    public EnemyBuilder setDefense(int defense) { this.defense = defense; return this; }
-    @Override
-    public EnemyBuilder setSpeed(int speed) { this.speed = speed; return this; }
-    @Override
-    public EnemyBuilder setElement(String element) { this.element = element; return this; }
-    @Override
-    public EnemyBuilder setAbilities(List<Ability> abilities) { this.abilities = abilities; return this; }
-    @Override
-    public EnemyBuilder addAbility(Ability ability) { this.abilities.add(ability); return this; }
-    @Override
-    public EnemyBuilder setLootTable(LootTable lootTable) { this.lootTable = lootTable; return this; }
-    @Override
-    public EnemyBuilder setAI(String aiBehavior) { this.aiBehavior = aiBehavior; return this; }
-
-    public DragonBossBuilder addPhase(int phaseNumber, int threshold) {
-        this.phases.put(phaseNumber, threshold);
-        return this;
-    }
-
-    public DragonBossBuilder setCanFly(boolean canFly) { this.canFly = canFly; return this; }
-    public DragonBossBuilder setHasBreathAttack(boolean hasBreathAttack) { this.hasBreathAttack = hasBreathAttack; return this; }
-    public DragonBossBuilder setWingspan(int wingspan) { this.wingspan = wingspan; return this; }
+    public BossEnemyBuilder setName(String name) { this.name = name; return this; }
+    public BossEnemyBuilder setHealth(int health) { this.health = health; return this; }
+    public BossEnemyBuilder setDamage(int damage) { this.damage = damage; return this; }
+    public BossEnemyBuilder setDefense(int defense) { this.defense = defense; return this; }
+    public BossEnemyBuilder setSpeed(int speed) { this.speed = speed; return this; }
+    public BossEnemyBuilder setElement(String element) { this.element = element; return this; }
+    public BossEnemyBuilder addAbility(Ability ability) { abilities.add(ability); return this; }
+    public BossEnemyBuilder addPhase(int phase, int threshold) { phases.put(phase, threshold); return this; }
+    public BossEnemyBuilder setLootTable(LootTable lootTable) { this.lootTable = lootTable; return this; }
+    public BossEnemyBuilder setAI(String ai) { this.aiBehavior = ai; return this; }
+    public BossEnemyBuilder setCanFly(boolean canFly) { this.canFly = canFly; return this; }
+    public BossEnemyBuilder setBreathAttack(boolean hasBreathAttack) { this.hasBreathAttack = hasBreathAttack; return this; }
+    public BossEnemyBuilder setWingspan(int wingspan) { this.wingspan = wingspan; return this; }
 
     @Override
     public Enemy build() {
-        if (name == null || health <= 0) throw new IllegalStateException("Name and health required!");
-        return new BasicEnemyBuilder(name, health, damage, defense, speed, element, abilities, phases,
-                lootTable, aiBehavior, canFly, hasBreathAttack, wingspan);
+        if (name == null || health <= 0) {
+            throw new IllegalStateException("Boss must have name and health!");
+        }
+
+        // Use DragonBoss.Builder internally
+        return new DragonBoss.Builder()
+                .setName(name)
+                .setHealth(health)
+                .setDamage(damage)
+                .setDefense(defense)
+                .setSpeed(speed)
+                .setElement(element)
+                .setAbilities(abilities)
+                .setLootTable(lootTable)
+                .setAI(aiBehavior)
+                .setCanFly(canFly)
+                .setBreathAttack(hasBreathAttack)
+                .setWingspan(wingspan)
+                .build();
     }
 }

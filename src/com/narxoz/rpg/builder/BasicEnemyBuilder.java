@@ -1,83 +1,58 @@
-package com.narxoz.rpg.enemy;
+package com.narxoz.rpg.builder;
 
+import com.narxoz.rpg.enemy.Enemy;
+import com.narxoz.rpg.enemy.Goblin;
 import com.narxoz.rpg.combat.Ability;
 import com.narxoz.rpg.loot.LootTable;
-
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
-public class DragonBoss implements Enemy {
+public class BasicEnemyBuilder implements EnemyBuilder {
 
-    private final String name;
-    private int health;
-    private int damage;
-    private int defense;
-    private int speed;
-    private final String element;
-    private final List<Ability> abilities;
-    private final Map<Integer, Integer> phases;
-    private LootTable lootTable;
-    private final String aiBehavior;
-    private final boolean canFly;
-    private final boolean hasBreathAttack;
-    private final int wingspan;
+    protected String name;
+    protected int health;
+    protected int damage;
+    protected int defense;
+    protected int speed;
+    protected List<Ability> abilities = new ArrayList<>();
+    protected LootTable lootTable;
 
-    public DragonBoss(String name, int health, int damage, int defense, int speed,
-                      String element, List<Ability> abilities, Map<Integer, Integer> phases,
-                      LootTable lootTable, String aiBehavior,
-                      boolean canFly, boolean hasBreathAttack, int wingspan) {
-        this.name = name;
-        this.health = health;
-        this.damage = damage;
-        this.defense = defense;
-        this.speed = speed;
-        this.element = element;
-        this.abilities = new ArrayList<>(abilities);  // deep copy list reference
-        this.phases = phases;
-        this.lootTable = lootTable;
-        this.aiBehavior = aiBehavior;
-        this.canFly = canFly;
-        this.hasBreathAttack = hasBreathAttack;
-        this.wingspan = wingspan;
+    public BasicEnemyBuilder() {
+        // default constructor
     }
 
     @Override
-    public String getName() { return name; }
+    public BasicEnemyBuilder setName(String name) { this.name = name; return this; }
     @Override
-    public int getHealth() { return health; }
+    public BasicEnemyBuilder setHealth(int health) { this.health = health; return this; }
     @Override
-    public int getDamage() { return damage; }
+    public BasicEnemyBuilder setDamage(int damage) { this.damage = damage; return this; }
     @Override
-    public int getDefense() { return defense; }
+    public BasicEnemyBuilder setDefense(int defense) { this.defense = defense; return this; }
     @Override
-    public int getSpeed() { return speed; }
+    public BasicEnemyBuilder setSpeed(int speed) { this.speed = speed; return this; }
     @Override
-    public String getElement() { return element; }
+    public BasicEnemyBuilder setAbilities(List<Ability> abilities) { this.abilities = abilities; return this; }
     @Override
-    public List<Ability> getAbilities() { return new ArrayList<>(abilities); }
+    public BasicEnemyBuilder addAbility(Ability ability) { this.abilities.add(ability); return this; }
     @Override
-    public LootTable getLootTable() { return lootTable; }
-    @Override
-    public String getAIBehavior() { return aiBehavior; }
+    public BasicEnemyBuilder setLootTable(LootTable lootTable) { this.lootTable = lootTable; return this; }
 
     @Override
-    public Enemy clone() {
-        List<Ability> clonedAbilities = new ArrayList<>();
-        for (Ability ability : abilities) {
-            clonedAbilities.add(ability.clone());
+    public EnemyBuilder addPhase(int phaseNumber, int healthThreshold) {
+        return null;
+    }
+
+    @Override
+    public EnemyBuilder setAI(String aiBehavior) {
+        return null;
+    }
+
+    @Override
+    public Enemy build() {
+        if (name == null || health <= 0) {
+            throw new IllegalStateException("Enemy must have name and health!");
         }
-        LootTable clonedLoot = lootTable != null ? lootTable.clone() : null;
-        return new DragonBoss(name, health, damage, defense, speed, element,
-                clonedAbilities, phases, clonedLoot, aiBehavior,
-                canFly, hasBreathAttack, wingspan);
-    }
-
-    @Override
-    public void multiplyStats(double factor) {
-        health *= factor;
-        damage *= factor;
-        defense *= factor;
-        speed *= factor;
+        return new Goblin(name, health, damage, defense, speed, abilities, lootTable);
     }
 }
