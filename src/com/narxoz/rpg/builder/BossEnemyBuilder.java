@@ -46,7 +46,7 @@ public abstract class BossEnemyBuilder implements EnemyBuilder {
             throw new IllegalStateException("Boss must have name and health!");
         }
 
-        // Use DragonBoss.Builder internally
+
         return new DragonBoss.Builder()
                 .setName(name)
                 .setHealth(health)

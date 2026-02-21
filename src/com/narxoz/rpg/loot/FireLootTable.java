@@ -19,7 +19,7 @@ public class FireLootTable implements LootTable {
         this.experience = 1200;
     }
 
-    // Copy constructor (DEEP COPY)
+
     private FireLootTable(FireLootTable other) {
         this.items = new ArrayList<>(other.items);
         this.gold = other.gold;

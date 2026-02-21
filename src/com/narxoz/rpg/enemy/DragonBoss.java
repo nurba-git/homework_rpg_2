@@ -17,7 +17,7 @@ public class DragonBoss implements Enemy {
     private final boolean hasBreathAttack;
     private final int wingspan;
 
-    // ===== Constructor is private! Only Builder can build it =====
+
     private DragonBoss(Builder builder) {
         this.name = builder.name;
         this.health = builder.health;
@@ -39,7 +39,7 @@ public class DragonBoss implements Enemy {
         this.wingspan = builder.wingspan;
     }
 
-    // ===== Public Nested Builder =====
+
     public static class Builder {
         private String name;
         private int health, damage, defense, speed;
@@ -74,7 +74,7 @@ public class DragonBoss implements Enemy {
         }
     }
 
-    // ===== Methods =====
+
     @Override
     public String getName() { return name; }
     @Override
